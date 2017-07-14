@@ -1,10 +1,9 @@
 # airflow-dcos
-Apache Airflow running on Mesosphere's Data Center Operating System (DC/OS)
+Apache Airflow 1.8.0 running on Mesosphere's Data Center Operating System (DC/OS) version 1.9.x.
 
-This project contains DC/OS Metronome and Marathon JSON specifications that launch the Apache Airflow DAG scheduler on a DC/OS cluster.
+This project contains DC/OS Metronome and Marathon JSON specifications that launch the Apache Airflow DAG scheduler on a DC/OS cluster. It utilizes a Docker container image that includes the Airflow application components as well as the Mesos native libaries and Python EGGs for Mesos. Therefore, you do NOT have to preinstall Apache Airflow on each DC/OS agent node. Also, the Airflow MesosExecutor class has been modified to use a Docker container image to host the DAG task. It is recommended that you modify the default Docker image and add your DAG tasks' artifacts to the image and specify that new image as the image to use when launching your DAG tasks (see the description of USE_DOCKER_CONTAINER and DEFAULT_DOCKER_CONTAINER_IMAGE below).
 
 Contents:
-
      marathon/airflow-postgresql-marathon.json	- Start a Postgres instance for Airflow to use to store job info
      marathon/airflow-scheduler-marathon.json	- Start the Airflow DAG Scheduler
      marathon/airflow-webserver-marathon.json	- Start the Airflow Web console
@@ -23,11 +22,20 @@ Contents:
 
 1. Launch a DC/OS cluster with at least 3 private agent nodes and 1 public agent node.
 
-2. Install Marathon-LB on your DC/OS cluster. If you are using the Enterprise version of DC/OS, you should configure M-LB to use a service account. For open source DC/OS use the "Universe" DC/OS dashboard page to lauch the Marathon-LB service, or use the command line interface (CLI) with the command:
+2. Install Marathon-LB on your DC/OS cluster 
+
+If you are using the Enterprise version of DC/OS, you should configure M-LB to use a service account. For open source DC/OS use the "Universe" DC/OS dashboard page to lauch the Marathon-LB service, or use the command line interface (CLI) with the command:
 
      $ dcos package install marathon-lb --yes
 
-3. Start the Airflow Postgres database instance using the CLI:
+3. Start the Airflow Postgres database instance using the CLI 
+
+If you would like to change the database username or password, change the environment variables included in the json file for:
+
+         "POSTGRES_USER": "airflow",
+         "POSTGRES_PASSWORD": "changeme"
+
+Then run the following CLI commands:
 
      $ dcos marathon app add marathon/airflow-postgresql-marathon.json
 
@@ -35,7 +43,14 @@ Once the Postgres instance is running, you can test a connection to it using a l
 
      $ psql -d airflow-db -U airflow -W -p 15432 -h <ip address of public agent>
 
-4. Launch the Airflow "initdb" job to create the database schema:
+4. Launch the Airflow "initdb" job to create the database schema 
+
+If you changed the database username or password, then include the new settings in the environment variables in this json file.
+
+         "POSTGRES_USER": "<new user name>",
+         "POSTGRES_PASSWORD": "<new password>"
+
+Then run the following CLI commands:
 
      $ dcos job add jobs/airflow-initdb-job.json
 
@@ -43,9 +58,37 @@ Once the Postgres instance is running, you can test a connection to it using a l
 
 5. Start the Airflow DAG Scheduler
 
+If you changed the database username or password, then include the new settings in the environment variables in this json file.
+
+         "POSTGRES_USER": "<new user name>",
+         "POSTGRES_PASSWORD": "<new password>"
+
+You can also change the Airflow DAG scheduler Mesos tunables to match your cluster size. Change these environment variables:
+
+		"ENABLE_DEBUG_LOG": "true",
+		"TASK_CPU": "1",
+		"TASK_MEMORY": "1024",
+		"PARALLELISM": "32",
+		"DAG_CONCURRENCY": "16",
+		"MAX_ACTIVE_RUNS_PER_DAG": "16",
+
+If you have your own Docker container image (recommended), then you can specify it by changing these environment variables:
+
+    "USE_DOCKER_CONTAINER": "True",
+    "DEFAULT_DOCKER_CONTAINER_IMAGE": "gregpalmermesosphere/airflow-dcos:latest",
+
+Then run the following CLI commands:
+
      $ dcos marathon app add marathon/airflow-scheduler-marathon.json
 
 6. Start the Airflow Web console
+
+If you changed the database username or password, then include the new settings in the environment variables in this json file.
+
+         "POSTGRES_USER": "<new user name>",
+         "POSTGRES_PASSWORD": "<new password>"
+
+Then run the following CLI commands:
 
      $ dcos marathon app add marathon/airflow-webserver-marathon.json
 
@@ -54,6 +97,13 @@ Once the Web console app is running, you can view the console via the Marathon-L
      http://<ip address of public agent>:14300
      
 7. Launch an example DAG job:
+
+If you changed the database username or password, then include the new settings in the environment variables in this json file.
+
+         "POSTGRES_USER": "<new user name>",
+         "POSTGRES_PASSWORD": "<new password>"
+
+Then run the following CLI commands:
 
     $ dcos job add jobs/airflow-submit-tutorial-dag-job.json
 
