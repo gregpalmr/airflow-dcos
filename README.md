@@ -9,15 +9,16 @@ Contents:
      marathon/airflow-scheduler-marathon.json	- Start the Airflow DAG Scheduler
      marathon/airflow-webserver-marathon.json	- Start the Airflow Web console
 
-     jobs/airflow-initdb-job.json				- Launch the Airflow "initdb" process to create database tables
-     jobs/airflow-resetdb-job.json				- (optionally) Launch the Airflow "resetdb" process
+     jobs/airflow-initdb-job.json			- Launch the Airflow "initdb" process to create database tables
+     jobs/airflow-resetdb-job.json			- (optionally) Launch the Airflow "resetdb" process
      jobs/airflow-submit-tutorial-dag-job.json	- Launch an example DAG job
 
-`USAGE`
+``USAGE``
 
 1. Clone this repo on your client computer
 
      $ git clone https://github.com/gregpalmr/airflow-dcos
+
      $ cd airflow-dcos
 
 1. Launch a DC/OS cluster with at least 3 private agent nodes and 1 public agent node.
@@ -37,6 +38,7 @@ Once the Postgres instance is running, you can test a connection to it using a l
 4. Launch the Airflow "initdb" job to create the database schema:
 
      $ dcos job add jobs/airflow-initdb-job.json
+
      $ dcos job run airflow-initdb-job
 
 5. Start the Airflow DAG Scheduler
@@ -54,6 +56,7 @@ Once the Web console app is running, you can view the console via the Marathon-L
 7. Launch an example DAG job:
 
     $ dcos job add jobs/airflow-submit-tutorial-dag-job.json
+
     $ dcos job run airflow-submit-tutorial-dag-job
 
 Once the example DAG job is running, you can view the progress on the Airflow Web console by clicking on the "tutorial" DAG listed on the "DAGs" page.
@@ -61,6 +64,7 @@ Once the example DAG job is running, you can view the progress on the Airflow We
 8. You can optionally reset the Airflow Postgres database schema (erasing all previous data) by running this DC/OS job:
 
      $ dcos job add jobs/airflow-resetdb-job.json
+
      $ dcos job run airflow-resetdb-job
 
 
