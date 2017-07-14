@@ -1,0 +1,27 @@
+{
+  "id": "airflow-resetdb-job",
+  "labels": {},
+  "run": {
+    "cpus": 1,
+    "mem": 1024,
+    "disk": 0,
+    "cmd": "echo Init-DB && /usr/local/airflow/bin/resetdb.sh && sleep 60",
+    "env": {
+     "AIRFLOW_HOME": "usr/local/airflow",
+     "POSTGRES_USER": "airflow",
+     "POSTGRES_PASSWORD": "changeme"
+    },
+    "placement": {
+      "constraints": []
+    },
+    "artifacts": [],
+    "maxLaunchDelay": 3600,
+    "docker": {
+      "image": "gregpalmermesosphere/airflow-dcos:latest"
+    },
+    "volumes": [],
+    "restart": {
+      "policy": "NEVER"
+    }
+  }
+}

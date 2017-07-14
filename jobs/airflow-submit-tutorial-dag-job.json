@@ -1,0 +1,35 @@
+{
+  "id": "airflow-submit-tutorial-dag-job",
+  "labels": {},
+  "run": {
+    "cpus": 1,
+    "mem": 1024,
+    "disk": 0,
+    "cmd": "$AIRFLOW_HOME/bin/modify-airflow-cfg.sh && /usr/bin/airflow backfill tutorial -s 2015-06-01 -e 2017-06-29 && sleep 200",
+	"env": {
+		"AIRFLOW_HOME": "/usr/local/airflow",
+		"ENABLE_DEBUG_LOG": "true",
+		"TASK_CPU": "1",
+		"TASK_MEMORY": "1024",
+		"PARALLELISM": "32",
+		"DAG_CONCURRENCY": "16",
+		"MAX_ACTIVE_RUNS_PER_DAG": "16",
+		"USE_DOCKER_CONTAINER": "True",
+		"DEFAULT_DOCKER_CONTAINER_IMAGE": "gregpalmermesosphere/airflow-dcos:latest",
+        "POSTGRES_USER": "airflow",
+        "POSTGRES_PASSWORD": "changeme"
+    },
+    "placement": {
+      "constraints": []
+    },
+    "artifacts": [],
+    "maxLaunchDelay": 3600,
+    "docker": {
+      "image": "gregpalmermesosphere/airflow-dcos:latest"
+    },
+    "volumes": [],
+    "restart": {
+      "policy": "NEVER"
+    }
+  }
+}
