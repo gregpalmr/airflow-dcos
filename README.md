@@ -1,6 +1,6 @@
 # airflow-dcos
 
-##Apache Airflow 1.8.0 running on Mesosphere's Data Center Operating System (DC/OS) version 1.12.x.
+## Apache Airflow 1.8.0 running on Mesosphere's Data Center Operating System (DC/OS) version 1.12.x.
 
 This project contains DC/OS Metronome and Marathon JSON specifications that launch the Apache Airflow DAG scheduler on a DC/OS cluster. It utilizes a Docker container image that includes the Airflow application components as well as the Mesos native libaries and Python Eggs for Mesos. Therefore, you do NOT have to preinstall Apache Airflow on each DC/OS agent node. Also, the Airflow MesosExecutor class has been modified to use a Docker container image to host the DAG tasks. It is recommended that you modify the default Docker image and add your DAG tasks' artifacts to the image and then specify that new image as the image to use when launching your DAG tasks (see the description of USE_DOCKER_CONTAINER and DEFAULT_DOCKER_CONTAINER_IMAGE below).
 
