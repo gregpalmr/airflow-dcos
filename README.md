@@ -129,6 +129,5 @@ Once the Web console app is running, you can view the console via the Marathon-L
 
 A. Combine the Airflow Scheduler task with the Airflow Websever task using DC/OS Pod support (mulitple containers sharing a mounted volume), so that they can "see" new airflow DAG scheduler requests created by end-users.
 
-B. Deploy these Airflow tasks using Mesosphere's Service Development Kit or SDK (see https://mesosphere.github.io/dcos-commons/
-).
+B. Deploy these Airflow tasks using Mesosphere's Service Development Kit or SDK (see https://mesosphere.github.io/dcos-commons).
 
