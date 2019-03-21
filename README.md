@@ -1,5 +1,5 @@
 # airflow-dcos
-Apache Airflow 1.8.0 running on Mesosphere's Data Center Operating System (DC/OS) version 1.9.x.
+Apache Airflow 1.8.0 running on Mesosphere's Data Center Operating System (DC/OS) version 1.12.x.
 
 This project contains DC/OS Metronome and Marathon JSON specifications that launch the Apache Airflow DAG scheduler on a DC/OS cluster. It utilizes a Docker container image that includes the Airflow application components as well as the Mesos native libaries and Python Eggs for Mesos. Therefore, you do NOT have to preinstall Apache Airflow on each DC/OS agent node. Also, the Airflow MesosExecutor class has been modified to use a Docker container image to host the DAG tasks. It is recommended that you modify the default Docker image and add your DAG tasks' artifacts to the image and then specify that new image as the image to use when launching your DAG tasks (see the description of USE_DOCKER_CONTAINER and DEFAULT_DOCKER_CONTAINER_IMAGE below).
 
@@ -27,7 +27,7 @@ Contents:
 
 If you are using the Enterprise version of DC/OS, you should configure M-LB to use a service account. Instructions on how to install Marathon-LB with a service account can be found here:
 
-     https://docs.mesosphere.com/1.9/networking/marathon-lb/mlb-auth/
+     https://docs.mesosphere.com/services/marathon-lb/1.12.x/
 
 For open source DC/OS use the "Universe" DC/OS dashboard page to lauch the Marathon-LB service, or use the command line interface (CLI) with the command:
 
@@ -47,6 +47,9 @@ Then run the following CLI commands:
 Once the Postgres instance is running, you can test a connection to it using a locally install psql command:
 
      $ psql -d airflow-db -U airflow -W -p 15432 -h <ip address of public agent>
+
+     NOTE: If it fails to connect, make sure your AWS Security Group inbound rules allow port 15432, 
+     or your other cloud vendor's firewall rules allow port 15432.
 
 4. Launch the Airflow "initdb" job to create the database schema 
 
@@ -103,18 +106,18 @@ Once the Web console app is running, you can view the console via the Marathon-L
      
 7. Launch an example DAG job:
 
-If you changed the database username or password, then include the new settings in the environment variables in this json file.
+    If you changed the database username or password, then include the new settings in the environment variables in this json file.
 
          "POSTGRES_USER": "<new user name>",
          "POSTGRES_PASSWORD": "<new password>"
 
-Then run the following CLI commands:
+    Then run the following CLI commands:
 
-    $ dcos job add jobs/airflow-submit-tutorial-dag-job.json
+        $ dcos job add jobs/airflow-submit-tutorial-dag-job.json
 
-    $ dcos job run airflow-submit-tutorial-dag-job
+        $ dcos job run airflow-submit-tutorial-dag-job
 
-Once the example DAG job is running, you can view the progress on the Airflow Web console by clicking on the "tutorial" DAG listed on the "DAGs" page.
+    Once the example DAG job is running, you can view the progress on the Airflow Web console by clicking on the "tutorial" DAG listed on the "DAGs" page.
 
 8. You can optionally reset the Airflow Postgres database schema (erasing all previous data) by running this DC/OS job:
 
