@@ -118,7 +118,7 @@ Once the Web console app is running, you can view the console via the Marathon-L
 
         $ dcos job run airflow-submit-tutorial-dag-job
 
-    Once the example DAG job is running, you can view the progress on the Airflow Web console by clicking on the "tutorial" DAG listed on the "DAGs" page.
+Once the example DAG job is running, you can view the progress on the Airflow Web console by clicking on the "tutorial" DAG listed on the "DAGs" page.
 
 ### 8. You can optionally reset the Airflow Postgres database schema (erasing all previous data) by running this DC/OS job:
 
