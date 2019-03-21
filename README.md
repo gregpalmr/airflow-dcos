@@ -13,17 +13,17 @@ Contents:
      jobs/airflow-resetdb-job.json			- (optionally) Launch the Airflow "resetdb" process
      jobs/airflow-submit-tutorial-dag-job.json	- Launch an example DAG job
 
-``USAGE``
+# USAGE
 
-1. Clone this repo on your client computer
+### Clone this repo on your client computer
 
      $ git clone https://github.com/gregpalmr/airflow-dcos
 
      $ cd airflow-dcos
 
-1. Launch a DC/OS cluster with at least 3 private agent nodes and 1 public agent node.
+### 1. Launch a DC/OS cluster with at least 3 private agent nodes and 1 public agent node.
 
-2. Install Marathon-LB load balancer on your DC/OS cluster 
+### 2. Install Marathon-LB load balancer on your DC/OS cluster 
 
 If you are using the Enterprise version of DC/OS, you should configure M-LB to use a service account. Instructions on how to install Marathon-LB with a service account can be found here:
 
@@ -33,7 +33,7 @@ For open source DC/OS use the "Universe" DC/OS dashboard page to lauch the Marat
 
      $ dcos package install marathon-lb --yes
 
-3. Start the Airflow Postgres database instance using the CLI 
+### 3. Start the Airflow Postgres database instance using the CLI 
 
 If you would like to change the database username or password, change the environment variables included in the json file for:
 
