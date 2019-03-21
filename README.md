@@ -51,7 +51,7 @@ Once the Postgres instance is running, you can test a connection to it using a l
      NOTE: If it fails to connect, make sure your AWS Security Group inbound rules allow port 15432, 
      or your other cloud vendor's firewall rules allow port 15432.
 
-4. Launch the Airflow "initdb" job to create the database schema 
+### 4. Launch the Airflow "initdb" job to create the database schema 
 
 If you changed the database username or password, then include the new settings in the environment variables in this json file.
 
@@ -64,7 +64,7 @@ Then run the following CLI commands:
 
      $ dcos job run airflow-initdb-job
 
-5. Start the Airflow DAG Scheduler
+### 5. Start the Airflow DAG Scheduler
 
 If you changed the database username or password, then include the new settings in the environment variables in this json file.
 
@@ -89,7 +89,7 @@ Then run the following CLI commands:
 
      $ dcos marathon app add marathon/airflow-scheduler-marathon.json
 
-6. Start the Airflow Web console
+### 6. Start the Airflow Web console
 
 If you changed the database username or password, then include the new settings in the environment variables in this json file.
 
@@ -104,7 +104,7 @@ Once the Web console app is running, you can view the console via the Marathon-L
 
      http://<ip address of public agent>:14300
      
-7. Launch an example DAG job:
+### 7. Launch an example DAG job:
 
     If you changed the database username or password, then include the new settings in the environment variables in this json file.
 
@@ -119,10 +119,16 @@ Once the Web console app is running, you can view the console via the Marathon-L
 
     Once the example DAG job is running, you can view the progress on the Airflow Web console by clicking on the "tutorial" DAG listed on the "DAGs" page.
 
-8. You can optionally reset the Airflow Postgres database schema (erasing all previous data) by running this DC/OS job:
+### 8. You can optionally reset the Airflow Postgres database schema (erasing all previous data) by running this DC/OS job:
 
      $ dcos job add jobs/airflow-resetdb-job.json
 
      $ dcos job run airflow-resetdb-job
 
+### TODO:
+
+A. Combine the Airflow Scheduler task with the Airflow Websever task using DC/OS Pod support (mulitple containers sharing a mounted volume), so that they can "see" new airflow DAG scheduler requests created by end-users.
+
+B. Deploy these Airflow tasks using Mesosphere's Service Development Kit or SDK (see https://mesosphere.github.io/dcos-commons/
+).
 
