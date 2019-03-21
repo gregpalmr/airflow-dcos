@@ -131,3 +131,4 @@ A. Combine the Airflow Scheduler task with the Airflow Websever task using DC/OS
 
 B. Deploy these Airflow tasks using Mesosphere's Service Development Kit or SDK (see https://mesosphere.github.io/dcos-commons).
 
+C. Upgrade the version of Airflow to 1.10. This will require modification of the Airflow Python source code for the Airflow Mesos executor (./airflow/contrib/executors/mesos_executor.py)
