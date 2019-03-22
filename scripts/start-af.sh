@@ -59,7 +59,9 @@ then
     echo
     echo " Unable to install the Enterprise CLI, continuing without it."
     echo
-    enteprise_cli=false
+    enteprise_cli="false"
+else
+    enteprise_cli="true"
 fi
 
 if [ "$enteprise_cli" == "true" ]
@@ -74,7 +76,7 @@ then
 
     # Create the access control list privs for the airflow service account
     echo
-    echo " Adding privilages to service account user the airflow user"
+    echo " Adding privilages to service account user the \"airflow\" user"
     dcos security org users grant airflow  dcos:mesos:master:framework:role:airflow-role create
     dcos security org users grant airflow  dcos:mesos:master:task:user:root create
     dcos security org users grant airflow  dcos:mesos:agent:task:user:root create
@@ -178,7 +180,6 @@ echo " Running the Airflow DAG Scheduler task"
 echo
 
 dcos marathon app add marathon/airflow-scheduler-marathon.json > /dev/null 2>&1
-
 printf " "
 while true
 do
@@ -238,6 +239,8 @@ do
 done
 
 echo
+echo "Done."
+
 echo
 echo " To submit an example Airflow DAG job, run the following CLI commands:"
 echo
