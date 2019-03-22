@@ -24,9 +24,9 @@ Contents:
 
 ### 1. Launch a DC/OS cluster with at least 3 private agent nodes and 1 public agent node.
 
-### 2. Install Marathon-LB load balancer on your DC/OS cluster 
+### 2. Install Marathon-LB load balancer or Edge-LB on your DC/OS cluster 
 
-If you are using the Enterprise version of DC/OS, you should configure M-LB to use a service account. Instructions on how to install Marathon-LB with a service account can be found here:
+These instructions show how to use Marathon-LB. If you are using the Enterprise version of DC/OS, you should configure M-LB to use a service account. Instructions on how to install Marathon-LB with a service account can be found here:
 
      https://docs.mesosphere.com/services/marathon-lb/1.12.x/
 
@@ -130,6 +130,10 @@ Once the example DAG job is running, you can view the progress on the Airflow We
 
 A. Combine the Airflow Scheduler task with the Airflow Websever task using DC/OS Pod support (mulitple containers sharing a mounted volume), so that they can "see" new airflow DAG scheduler requests created by end-users.
 
-B. Deploy these Airflow tasks using Mesosphere's Service Development Kit or SDK (see https://mesosphere.github.io/dcos-commons).
+B. Add instructions on how to launch Airflow in DC/OS Cluster STRICT mode.
 
-C. Upgrade the version of Airflow to 1.10. This will require modification of the Airflow Python source code for the Airflow Mesos executor (./airflow/contrib/executors/mesos_executor.py)
+C. Deploy these Airflow tasks using Mesosphere's Service Development Kit or SDK (see https://mesosphere.github.io/dcos-commons).
+
+D. Upgrade the version of Airflow to 1.10. This will require modification of the Airflow Python source code for the Airflow Mesos executor (./airflow/contrib/executors/mesos_executor.py)
+
+
