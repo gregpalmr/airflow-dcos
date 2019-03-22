@@ -126,6 +126,12 @@ Once the example DAG job is running, you can view the progress on the Airflow We
 
      $ dcos job run airflow-resetdb-job
 
+### 9. Two scripts are provided to start and stop the Airflow services in DC/OS. Use these commands:
+
+     $ scripts/start-af.sh
+
+     $ scripts/stop-af.sh
+
 ### TODO:
 
 A. Combine the Airflow Scheduler task with the Airflow Websever task using DC/OS Pod support (mulitple containers sharing a mounted volume), so that they can "see" new airflow DAG scheduler requests created by end-users.
