@@ -6,6 +6,8 @@ CORE_DCOS_URL=$(dcos config show core.dcos_url 2>&1)
 
 if [[ $CORE_DCOS_URL == *"http"* ]]
 then
+    echo ""
+else
     echo
     echo "     ERROR: core.dcos_url not found. Exiting."
     exit 1
