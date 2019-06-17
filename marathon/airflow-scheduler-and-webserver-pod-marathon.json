@@ -1,0 +1,147 @@
+{
+  "environment": {
+    "AIRFLOW_HOME": "/usr/local/airflow",
+    "MAX_ACTIVE_RUNS_PER_DAG": "16",
+    "POSTGRES_USER": "airflow",
+    "POSTGRES_PASSWORD": "changeme",
+    "DEFAULT_DOCKER_CONTAINER_IMAGE": "gregpalmermesosphere/airflow-dcos:latest",
+    "PARALLELISM": "32",
+    "DAG_CONCURRENCY": "16",
+    "TASK_MEMORY": "1024",
+    "TASK_CPU": "1",
+    "ENABLE_DEBUG_LOG": "true",
+    "USE_DOCKER_CONTAINER": "True"
+  },
+  "labels": {
+    "HAPROXY_GROUP": "external"
+  },
+  "id": "/airflow/airflow-dag-scheduler",
+  "version": "2019-06-17T12:54:37.383Z",
+  "containers": [
+    {
+      "name": "airflow-scheduler",
+      "resources": {
+        "cpus": 2,
+        "mem": 4096,
+        "disk": 0,
+        "gpus": 0
+      },
+      "exec": {
+        "command": {
+          "shell": "echo Scheduler && /usr/local/airflow/bin/start-scheduler.sh"
+        }
+      },
+      "image": {
+        "kind": "DOCKER",
+        "id": "gregpalmermesosphere/airflow-dcos:latest"
+      },
+      "healthCheck": {
+        "exec": {
+          "command": {
+            "shell": "tail -n 100 $MESOS_SANDBOX/stdout | grep 'Heartbeating the executor'"
+          }
+        },
+        "gracePeriodSeconds": 300,
+        "intervalSeconds": 60,
+        "maxConsecutiveFailures": 3,
+        "timeoutSeconds": 20,
+        "delaySeconds": 15
+      },
+      "volumeMounts": [
+        {
+          "name": "airflow-dags",
+          "mountPath": "/usr/local/airflow/airflow-dags"
+        }
+      ]
+    },
+    {
+      "name": "airflow-webserver",
+      "resources": {
+        "cpus": 2,
+        "mem": 4096,
+        "disk": 0,
+        "gpus": 0
+      },
+      "exec": {
+        "command": {
+          "shell": "echo Webserver && $AIRFLOW_HOME/bin/start-webserver.sh"
+        }
+      },
+      "image": {
+        "kind": "DOCKER",
+        "id": "gregpalmermesosphere/airflow-dcos:latest"
+      },
+      "healthCheck": {
+        "http": {
+          "scheme": "HTTP",
+          "endpoint": "airflow-webserver",
+          "path": "/"
+        },
+        "gracePeriodSeconds": 300,
+        "intervalSeconds": 60,
+        "maxConsecutiveFailures": 3,
+        "timeoutSeconds": 20,
+        "delaySeconds": 15
+      },
+      "volumeMounts": [
+        {
+          "name": "airflow-dags",
+          "mountPath": "/usr/local/airflow/airflow-dags"
+        }
+      ],
+      "endpoints": [
+        {
+          "name": "airflow-webserver",
+          "containerPort": 8080,
+          "hostPort": 0,
+          "protocol": [
+            "tcp"
+          ],
+          "labels": {
+            "VIP_0": "/airflow-scheduler-and-webserver:8080"
+          }
+        }
+      ]
+    }
+  ],
+  "volumes": [
+    {
+      "name": "airflow-dags"
+    }
+  ],
+  "networks": [
+    {
+      "name": "dcos",
+      "mode": "container"
+    }
+  ],
+  "scaling": {
+    "instances": 1,
+    "kind": "fixed"
+  },
+  "scheduling": {
+    "backoff": {
+      "backoff": 1,
+      "backoffFactor": 1.15,
+      "maxLaunchDelay": 300
+    },
+    "upgrade": {
+      "minimumHealthCapacity": 1,
+      "maximumOverCapacity": 1
+    },
+    "killSelection": "YOUNGEST_FIRST",
+    "unreachableStrategy": {
+      "inactiveAfterSeconds": 0,
+      "expungeAfterSeconds": 0
+    },
+    "placement": {
+      "constraints": []
+    }
+  },
+  "executorResources": {
+    "cpus": 0.1,
+    "mem": 32,
+    "disk": 10
+  },
+  "fetch": []
+}
