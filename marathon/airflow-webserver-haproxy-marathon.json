@@ -1,0 +1,53 @@
+{
+  "id": "/airflow/webserver-proxy",
+  "acceptedResourceRoles": [
+    "slave_public"
+  ],
+  "backoffFactor": 1.15,
+  "backoffSeconds": 1,
+  "cmd": "PROXY_PORT=14300 && SERVICE_NAME=\"Airflow\" && apt-get update && apt-get install openssl && openssl genrsa 2048 > haproxy-key.pem  && openssl req -new -x509 -nodes -sha1 -days 3650 -key haproxy-key.pem -subj \"/C=US/ST=CA/L=SF/O=Mesosphere/OU=dcos-kubernetes/CN=*\" > haproxy-crt.pem && cat haproxy-crt.pem haproxy-key.pem > haproxy.pem && echo \" global \n  log 127.0.0.1 local0 \n  tune.ssl.default-dh-param 2048 \n  debug \ndefaults \n  log global \n  mode http \n  option httplog \n  option dontlognull \n  timeout connect 10s \n  timeout client 86400s \n  timeout server 86400s \n  timeout tunnel 86400s \nfrontend frontend_all \n  bind :${PROXY_PORT} ssl crt haproxy.pem \n  mode http \n  default_backend backend_airflow_webserver_${SERVICE_NAME} \nbackend backend_airflow_webserver_${SERVICE_NAME} \n  mode http \n  balance leastconn \n  server airflow-webserver airflow-scheduler-and-webserver.marathon.l4lb.thisdcos.directory:8080 check ssl verify none  \nlisten stats \n  bind :9091 \n  mode http \n  stats enable \n  stats uri / \n \" > /usr/local/etc/haproxy/haproxy.conf && echo \"#### FILE: /usr/local/etc/haproxy/haproxy.conf ####\" && cat /usr/local/etc/haproxy/haproxy.conf && /usr/local/sbin/haproxy -f /usr/local/etc/haproxy/haproxy.conf && sleep 20000",
+  "constraints": [
+    [
+      "hostname",
+      "UNIQUE"
+    ]
+  ],
+  "container": {
+    "type": "MESOS",
+    "volumes": [],
+    "docker": {
+      "image": "haproxy:1.8.14",
+      "forcePullImage": false,
+      "parameters": []
+    }
+  },
+  "cpus": 1,
+  "disk": 0,
+  "instances": 1,
+  "maxLaunchDelaySeconds": 300,
+  "mem": 2048,
+  "gpus": 0,
+  "networks": [
+    {
+      "mode": "host"
+    }
+  ],
+  "portDefinitions": [
+    {
+      "protocol": "tcp",
+      "port": 14300
+    }
+  ],
+  "requirePorts": true,
+  "upgradeStrategy": {
+    "maximumOverCapacity": 1,
+    "minimumHealthCapacity": 1
+  },
+  "killSelection": "YOUNGEST_FIRST",
+  "unreachableStrategy": {
+    "inactiveAfterSeconds": 0,
+    "expungeAfterSeconds": 0
+  },
+  "healthChecks": [],
+  "fetch": []
+}
