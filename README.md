@@ -36,16 +36,24 @@ For open source DC/OS use the "Universe" DC/OS dashboard page to lauch the Marat
 
 ### 3. Start the Airflow Postgres database instance using the CLI 
 
-If you would like to change the database username or password, change the environment variables included in the json file for:
+If you would like to change the database username or password, change the environment variables included in the json file named marathon/airflow-postgresql-marathon.json. Change the following two environment variables:
 
          "POSTGRES_USER": "airflow",
          "POSTGRES_PASSWORD": "changeme"
 
-Then run the following CLI commands:
+If you DON'T want to expose the Postgres network listener to anyone outside the cluster (it is not required for Airflow to operate successfully), you can remove the following line from the marathon/airflow-postgresql-marathon.json file:
+
+         "HAPROXY_GROUP": "external"
+
+Then run the following CLI command to start the Airflow Postgres instance:
 
      $ dcos marathon app add marathon/airflow-postgresql-marathon.json
 
-Once the Postgres instance is running, you can test a connection to it using a locally install psql command:
+To test test the Postgres instance running on DC/OS, you can install the psql command on MacOS using the command:
+
+     $ brew install postgresql
+
+Once the Airflow Postgres instance is running on DC/OS, you can test a connection to it using a locally install psql command:
 
      $ psql -d airflow-db -U airflow -W -p 15432 -h <ip address of public agent>
 
